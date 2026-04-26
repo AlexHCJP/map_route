@@ -1,39 +1,77 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# map_route
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+A Flutter package for registering app routes and visualizing them as an interactive graph.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+## Preview
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+<p float="left">
+  <img src="assets/1.png" width="30%" />
+  <img src="assets/2.png" width="30%" />
+  <img src="assets/3.png" width="30%" />
+</p>
 
-## Features
+## Concepts
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+| Class | Description |
+|---|---|
+| `MRouteItem` | Wraps a screen, optionally with typed arguments |
+| `MRouteEdge` | Connection between two route items |
+| `MRouteRegistry` | Abstract class — declare all routes and edges here |
+| `MapRouteScreen` | Visual navigator with list, grouped list, and graph views |
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+**1. Define the registry**
 
 ```dart
-const like = 'sample';
+class AppRouteRegistry extends MRouteRegistry {
+  final home = MRouteItem<void, HomeScreen>.page(
+    category: 'main',
+    page: const HomeScreen(),
+  );
+
+  final profile = MRouteItem<ProfileArguments, ProfileScreen>(
+    category: 'main',
+    builder: (context, args) => ProfileScreen(args: args),
+    createArguments: (context) async {
+      // build and return MRouteGo(args) or null to cancel
+      return MRouteGo(ProfileArguments(userId: '1'));
+    },
+  );
+
+  @override
+  List<MRouteItem<dynamic, Widget>> get routes => [home, profile];
+
+  @override
+  List<MRouteEdge> get edges => [
+    MRouteEdge(home, profile),
+  ];
+}
 ```
 
-## Additional information
+**2. Open the map**
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+final registry = AppRouteRegistry();
+
+MapRouteScreen(registry: registry).view(context);
+```
+
+**3. Limit visible views (optional)**
+
+```dart
+MapRouteScreen(
+  registry: registry,
+  views: [MViewType.graph],
+)
+```
+
+## Edge helpers
+
+```dart
+// one → many
+MRouteEdge.edgesFrom(home, [profile, settings])
+
+// many → one
+MRouteEdge.edgesTo([auth, login], profileLoading)
+```
