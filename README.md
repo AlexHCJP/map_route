@@ -4,10 +4,12 @@ A Flutter package for registering app routes and visualizing them as an interact
 
 ## Preview
 
+<video src="https://github.com/AlexHCJP/map_route/blob/main/assets/example.mov?raw=true" controls width="100%"></video>
+
 <p float="left">
-  <img src="assets/1.png" width="30%" />
-  <img src="assets/2.png" width="30%" />
-  <img src="assets/3.png" width="30%" />
+  <img src="https://github.com/AlexHCJP/map_route/blob/main/assets/1.png?raw=true" width="30%" />
+  <img src="https://github.com/AlexHCJP/map_route/blob/main/assets/2.png?raw=true" width="30%" />
+  <img src="https://github.com/AlexHCJP/map_route/blob/main/assets/3.png?raw=true" width="30%" />
 </p>
 
 ## Concepts
