@@ -1,6 +1,6 @@
 name: map_route
 description: "A Flutter package for visual routing. for testing purposes only."
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/AlexHCJP/map_route
 
 environment:
