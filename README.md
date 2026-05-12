@@ -10,7 +10,7 @@ A Flutter package for registering app routes and visualizing them as an interact
 ![Pub Version](https://img.shields.io/pub/v/map_route)
 ![License](https://img.shields.io/github/license/AlexHCJP/map_route)
 ![Issues](https://img.shields.io/github/issues/AlexHCJP/map_route)
-[![codecov](https://codecov.io/gh/AlexHCJP/responsive_breakpoints/graph/badge.svg?token=WCSONR85E7)](https://codecov.io/gh/AlexHCJP/responsive_breakpoints)
+[![codecov](https://codecov.io/gh/AlexHCJP/map_route/graph/badge.svg?token=YAUGW6VZC0)](https://codecov.io/gh/AlexHCJP/map_route)
 ![Stars](https://img.shields.io/github/stars/AlexHCJP/map_route)
 
 
