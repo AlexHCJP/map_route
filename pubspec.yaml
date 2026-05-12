@@ -13,13 +13,13 @@ topics:
   - visualization
   - ui-testing
 
-platoform:
-  android: true
-  ios: true
-  web: true
-  linux: true
-  macos: true
-  windows: true
+platforms:
+  android: 
+  ios: 
+  web: 
+  linux:
+  macos:
+  windows:
 
 environment:
   sdk: ^3.11.0
