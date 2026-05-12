@@ -26,7 +26,9 @@ Widget _buildHome<T, W extends Widget>(MRouteItem<T, W> item) => MaterialApp(
 void main() {
   group('MRouteItem', () {
     test('screenType returns the widget Type', () {
-      final item = MRouteItem<void, SourceScreen>.page(page: const SourceScreen());
+      final item = MRouteItem<void, SourceScreen>.page(
+        page: const SourceScreen(),
+      );
       expect(item.screenType, SourceScreen);
     });
 
@@ -39,13 +41,18 @@ void main() {
     });
 
     test('.page factory allows null category', () {
-      final item = MRouteItem<void, SourceScreen>.page(page: const SourceScreen());
+      final item = MRouteItem<void, SourceScreen>.page(
+        page: const SourceScreen(),
+      );
       expect(item.category, isNull);
     });
 
-    testWidgets('onTap without createArguments navigates to screen',
-        (tester) async {
-      final item = MRouteItem<void, TargetScreen>.page(page: const TargetScreen());
+    testWidgets('onTap without createArguments navigates to screen', (
+      tester,
+    ) async {
+      final item = MRouteItem<void, TargetScreen>.page(
+        page: const TargetScreen(),
+      );
       await tester.pumpWidget(_buildHome(item));
       await tester.tap(find.text('go'));
       await tester.pumpAndSettle();
@@ -74,8 +81,9 @@ void main() {
       expect(find.text('target'), findsNothing);
     });
 
-    testWidgets('onTap with null createArguments result does not navigate',
-        (tester) async {
+    testWidgets('onTap with null createArguments result does not navigate', (
+      tester,
+    ) async {
       final item = MRouteItem<int, TargetScreen>(
         builder: (_, __) => const TargetScreen(),
         createArguments: (_) async => null,

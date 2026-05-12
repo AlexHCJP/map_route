@@ -5,13 +5,15 @@ import 'package:map_route/map_route.dart';
 class ScreenAlpha extends StatelessWidget {
   const ScreenAlpha({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Text('Screen Alpha'));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Text('Screen Alpha'));
 }
 
 class ScreenBeta extends StatelessWidget {
   const ScreenBeta({super.key});
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Text('Screen Beta'));
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Text('Screen Beta'));
 }
 
 final _routeAlpha = MRouteItem<void, ScreenAlpha>.page(
@@ -39,8 +41,9 @@ void main() {
       expect(find.text('Map Route'), findsOneWidget);
     });
 
-    testWidgets('SegmentedButton shows all view types by default',
-        (tester) async {
+    testWidgets('SegmentedButton shows all view types by default', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(MapRouteScreen(registry: _StubRegistry())));
       // MViewType.toString() returns 'Groups', 'List', 'Graph'
       expect(find.text('Groups'), findsOneWidget);
@@ -48,26 +51,35 @@ void main() {
       expect(find.text('Graph'), findsOneWidget);
     });
 
-    testWidgets('restricted to one view shows only that segment',
-        (tester) async {
-      await tester.pumpWidget(_wrap(
-        MapRouteScreen(registry: _StubRegistry(), views: const [MViewType.list]),
-      ));
+    testWidgets('restricted to one view shows only that segment', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          MapRouteScreen(
+            registry: _StubRegistry(),
+            views: const [MViewType.list],
+          ),
+        ),
+      );
       expect(find.text('List'), findsOneWidget);
       expect(find.text('Groups'), findsNothing);
       expect(find.text('Graph'), findsNothing);
     });
 
-    testWidgets('tapping between group and list segments does not crash',
-        (tester) async {
+    testWidgets('tapping between group and list segments does not crash', (
+      tester,
+    ) async {
       // Graph view is excluded: GraphifyView uses webview_flutter which requires
       // platform registration unavailable in the flutter_test environment.
-      await tester.pumpWidget(_wrap(
-        MapRouteScreen(
-          registry: _StubRegistry(),
-          views: const [MViewType.group, MViewType.list],
+      await tester.pumpWidget(
+        _wrap(
+          MapRouteScreen(
+            registry: _StubRegistry(),
+            views: const [MViewType.group, MViewType.list],
+          ),
         ),
-      ));
+      );
       await tester.tap(find.text('List'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Groups'));
@@ -75,11 +87,17 @@ void main() {
       expect(find.text('Map Route'), findsOneWidget);
     });
 
-    testWidgets('search in ListPage filters routes by screen name',
-        (tester) async {
-      await tester.pumpWidget(_wrap(
-        MapRouteScreen(registry: _StubRegistry(), views: const [MViewType.list]),
-      ));
+    testWidgets('search in ListPage filters routes by screen name', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          MapRouteScreen(
+            registry: _StubRegistry(),
+            views: const [MViewType.list],
+          ),
+        ),
+      );
       await tester.enterText(find.byType(TextField), 'ScreenAlpha');
       await tester.pumpAndSettle();
       // Use ListTile descendant to avoid matching the TextField's own EditableText
@@ -99,11 +117,17 @@ void main() {
       );
     });
 
-    testWidgets('search in GroupedListPage filters categories by screen name',
-        (tester) async {
-      await tester.pumpWidget(_wrap(
-        MapRouteScreen(registry: _StubRegistry(), views: const [MViewType.group]),
-      ));
+    testWidgets('search in GroupedListPage filters categories by screen name', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          MapRouteScreen(
+            registry: _StubRegistry(),
+            views: const [MViewType.group],
+          ),
+        ),
+      );
       await tester.enterText(find.byType(TextField), 'ScreenAlpha');
       await tester.pumpAndSettle();
       // 'Auth' category (contains ScreenAlpha) remains; 'Main' is filtered out
@@ -112,11 +136,17 @@ void main() {
       expect(find.text('ScreenBeta'), findsNothing);
     });
 
-    testWidgets('tapping route tile in ListPage navigates to screen',
-        (tester) async {
-      await tester.pumpWidget(_wrap(
-        MapRouteScreen(registry: _StubRegistry(), views: const [MViewType.list]),
-      ));
+    testWidgets('tapping route tile in ListPage navigates to screen', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          MapRouteScreen(
+            registry: _StubRegistry(),
+            views: const [MViewType.list],
+          ),
+        ),
+      );
       await tester.tap(find.text('ScreenAlpha'));
       await tester.pumpAndSettle();
       expect(find.text('Screen Alpha'), findsOneWidget);
