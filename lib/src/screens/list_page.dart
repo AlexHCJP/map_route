@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:map_route/src/models/m_route_item.dart';
 
 class ListPage extends StatefulWidget {
+  const ListPage({required this.routes, super.key});
+  
   final List<MRouteItem<dynamic, Widget>> routes;
-
-  const ListPage({super.key, required this.routes});
 
   @override
   State<ListPage> createState() => _ListPageState();
@@ -27,6 +27,7 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Padding(
@@ -46,7 +47,7 @@ class _ListPageState extends State<ListPage> {
             valueListenable: _searchController,
             builder: (context, value, child) {
               final query = value.text.toLowerCase();
-              final filteredCategories = widget.routes.where((route) {
+              final filtered = widget.routes.where((route) {
                 if (route.screenType.toString().toLowerCase().contains(query)) {
                   return true;
                 }
@@ -56,16 +57,48 @@ class _ListPageState extends State<ListPage> {
                 return false;
               }).toList();
               return ListView.builder(
-                itemCount: filteredCategories.length,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                itemCount: filtered.length,
                 itemBuilder: (context, index) {
-                  final category = filteredCategories[index];
-
-                  return ListTile(
-                    title: Text(category.screenType.toString()),
-                    subtitle: category.category != null
-                        ? Text(category.category!)
-                        : null,
-                    onTap: () => category.onTap(context),
+                  final route = filtered[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      tileColor: colorScheme.surfaceContainer,
+                      title: Text(route.screenType.toString()),
+                      subtitle: route.category != null
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: Chip(
+                                label: Text(
+                                  route.category!,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: colorScheme.onSecondaryContainer,
+                                  ),
+                                ),
+                                backgroundColor:
+                                    colorScheme.secondaryContainer,
+                                padding: EdgeInsets.zero,
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            )
+                          : null,
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 14,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      onTap: () => route.onTap(context),
+                    ),
                   );
                 },
               );

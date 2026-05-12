@@ -3,23 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:graphify/graphify.dart';
 import 'package:map_route/map_route.dart';
 import 'package:map_route/src/screens/grouped_list_page.dart';
-import 'list_page.dart';
+import 'package:map_route/src/screens/list_page.dart';
 
 class MapRouteScreen extends StatefulWidget {
   const MapRouteScreen({
-    super.key,
     required this.registry,
+    super.key,
     this.views = MViewType.values,
   });
 
   final MRouteRegistry registry;
   final List<MViewType> views;
 
-  Future<void> view(BuildContext context) async {
-    return Navigator.of(
-      context,
-    ).push<void>(MaterialPageRoute(builder: (context) => this));
-  }
+  Future<void> view(BuildContext context) async => Navigator.of(
+    context,
+  ).push<void>(MaterialPageRoute(builder: (context) => this));
 
   @override
   State<MapRouteScreen> createState() => _MapRouteScreenState();
@@ -27,12 +25,14 @@ class MapRouteScreen extends StatefulWidget {
 
 class _MapRouteScreenState extends State<MapRouteScreen> {
   late final PageController _pageController;
+  late MViewType _selectedView;
   static const _unknownCategory = 'unknown screen';
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0);
+    _selectedView = widget.views.first;
   }
 
   @override
@@ -41,16 +41,16 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
     super.dispose();
   }
 
-  List<MViewType> get views {
-    return widget.views;
-  }
+  List<MViewType> get views => widget.views;
 
   Map<MViewType, _ItemPage> get pageByViewType {
-    final groupedRoutes = <String, List<MRouteItem>>{};
+    final groupedRoutes = <String, List<MRouteItem<Object?, Object?>>>{};
 
     for (final route in widget.registry.routes) {
       final category = _normalizedCategory(route.category);
-      groupedRoutes.putIfAbsent(category, () => <MRouteItem>[]).add(route);
+      groupedRoutes
+          .putIfAbsent(category, () => <MRouteItem<Object?, Object?>>[])
+          .add(route);
     }
 
     final sortedCategories = groupedRoutes.keys.toList()
@@ -69,12 +69,13 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
         entry.value.screenType.toString(): entry.key,
     };
 
-    final degreeByRoute = <MRouteItem, int>{
+    final degreeByRoute = <MRouteItem<Object?, Object?>, int>{
       for (final route in widget.registry.routes) route: 0,
     };
     for (final edge in widget.registry.edges) {
-      degreeByRoute.update(edge.from, (value) => value + 1, ifAbsent: () => 1);
-      degreeByRoute.update(edge.to, (value) => value + 1, ifAbsent: () => 1);
+      degreeByRoute
+        ..update(edge.from, (value) => value + 1, ifAbsent: () => 1)
+        ..update(edge.to, (value) => value + 1, ifAbsent: () => 1);
     }
 
     final graphNodes = widget.registry.routes.asMap().entries.map((entry) {
@@ -97,12 +98,12 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
               routeIndexByTitle.containsKey(edge.from.screenType.toString()) &&
               routeIndexByTitle.containsKey(edge.to.screenType.toString()),
         )
-        .map((edge) {
-          return <String, int>{
+        .map(
+          (edge) => <String, int>{
             'source': routeIndexByTitle[edge.from.screenType.toString()]!,
             'target': routeIndexByTitle[edge.to.screenType.toString()]!,
-          };
-        })
+          },
+        )
         .toList();
 
     if (graphEdges.isEmpty && widget.registry.edges.isNotEmpty) {
@@ -137,24 +138,20 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
     return {
       MViewType.groupedList: _ItemPage(
         page: Builder(
-          builder: (context) {
-            return GroupedListPage(
-              groupedRoutes: groupedRoutes,
-              sortedCategories: sortedCategories,
-            );
-          },
+          builder: (context) => GroupedListPage(
+            groupedRoutes: groupedRoutes,
+            sortedCategories: sortedCategories,
+          ),
         ),
       ),
       MViewType.list: _ItemPage(
         page: Builder(
-          builder: (context) {
-            return ListPage(routes: widget.registry.routes);
-          },
+          builder: (context) => ListPage(routes: widget.registry.routes),
         ),
       ),
       MViewType.graph: _ItemPage(
         page: GraphifyView(
-          key: ValueKey('graph_view'),
+          key: const ValueKey('graph_view'),
           initialOptions: graphOptions,
         ),
       ),
@@ -163,30 +160,39 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Map Route')),
+      backgroundColor: colorScheme.surface,
+      appBar: AppBar(
+        title: const Text('Map Route'),
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(height: 1, color: colorScheme.outlineVariant),
+        ),
+      ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListenableBuilder(
-              listenable: _pageController,
-              builder: (context, child) {
-                return Row(
-                  spacing: 8,
-                  children: [
-                    ...views.mapIndexed((index, viewType) {
-                      return Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _pageController.jumpToPage(index);
-                          },
-                          child: Text(viewType.name),
-                        ),
-                      );
-                    }),
-                  ],
-                );
+            padding: const EdgeInsets.all(12),
+            child: SegmentedButton<MViewType>(
+              expandedInsets: EdgeInsets.zero,
+              segments: views
+                  .map(
+                    (v) => ButtonSegment<MViewType>(
+                      value: v,
+                      label: Text(v.name),
+                    ),
+                  )
+                  .toList(),
+              selected: {_selectedView},
+              onSelectionChanged: (selection) {
+                final next = selection.first;
+                final index = views.indexOf(next);
+                setState(() => _selectedView = next);
+                _pageController.jumpToPage(index);
               },
             ),
           ),
@@ -235,7 +241,6 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
 enum MViewType { groupedList, list, graph }
 
 class _ItemPage {
-  final Widget page;
-
   _ItemPage({required this.page});
+  final Widget page;
 }
