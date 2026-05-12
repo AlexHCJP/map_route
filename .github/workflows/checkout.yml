@@ -15,6 +15,7 @@ on:
     branches: [ "master", "main" ]
     paths:
       - '.github/**'
+      - 'lib/**'
 
 jobs:
   checkout:
