@@ -57,6 +57,8 @@ fix: get ## format and fix code
 	$(call print-target)
 	@fvm dart format . -l 80 lib/
 	@fvm dart fix --apply lib/
+	@fvm dart fix --apply test/
+
 
 .PHONY: format
 format: fix

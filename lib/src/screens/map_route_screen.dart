@@ -5,16 +5,31 @@ import 'package:map_route/map_route.dart';
 import 'package:map_route/src/screens/grouped_list_page.dart';
 import 'package:map_route/src/screens/list_page.dart';
 
+/// A screen that visualises the navigation graph declared in an [MRouteRegistry].
+///
+/// Supports three view modes — grouped list, flat list, and a force-directed
+/// graph — switchable via a [SegmentedButton] at the top. Pass [views] to
+/// restrict which modes are available.
+///
+/// Typical usage:
+/// ```dart
+/// await MapRouteScreen(registry: AppRegistry()).view(context);
+/// ```
 class MapRouteScreen extends StatefulWidget {
+  /// Creates a [MapRouteScreen] backed by the given [registry].
   const MapRouteScreen({
     required this.registry,
     super.key,
     this.views = MViewType.values,
   });
 
+  /// The registry that supplies routes and edges to visualise.
   final MRouteRegistry registry;
+
+  /// The view modes shown in the tab switcher. Defaults to all [MViewType] values.
   final List<MViewType> views;
 
+  /// Pushes this screen onto the navigator of [context].
   Future<void> view(BuildContext context) async => Navigator.of(
     context,
   ).push<void>(MaterialPageRoute(builder: (context) => this));
@@ -136,7 +151,7 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
     };
 
     return {
-      MViewType.groupedList: _ItemPage(
+      MViewType.group: _ItemPage(
         page: Builder(
           builder: (context) => GroupedListPage(
             groupedRoutes: groupedRoutes,
@@ -183,7 +198,7 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
                   .map(
                     (v) => ButtonSegment<MViewType>(
                       value: v,
-                      label: Text(v.name),
+                      label: Text(v.toString()),
                     ),
                   )
                   .toList(),
@@ -238,7 +253,24 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
   }
 }
 
-enum MViewType { groupedList, list, graph }
+/// The view modes available in [MapRouteScreen].
+enum MViewType {
+  /// Routes grouped by category in collapsible sections.
+  group,
+
+  /// Flat searchable list of all routes.
+  list,
+
+  /// Force-directed graph showing routes and their navigation edges.
+  graph;
+
+  @override
+  String toString() => switch (this) {
+    MViewType.group => 'Groups',
+    MViewType.list => 'List',
+    MViewType.graph => 'Graph',
+  };
+}
 
 class _ItemPage {
   _ItemPage({required this.page});

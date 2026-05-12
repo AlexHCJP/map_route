@@ -1,6 +1,18 @@
+![Frame](screenshots/contributors.png)
+
 # map_route
 
+
+
 A Flutter package for registering app routes and visualizing them as an interactive graph.
+
+# Responsive Breakpoints
+![Pub Version](https://img.shields.io/pub/v/map_route)
+![License](https://img.shields.io/github/license/AlexHCJP/map_route)
+![Issues](https://img.shields.io/github/issues/AlexHCJP/map_route)
+[![codecov](https://codecov.io/gh/AlexHCJP/responsive_breakpoints/graph/badge.svg?token=WCSONR85E7)](https://codecov.io/gh/AlexHCJP/responsive_breakpoints)
+![Stars](https://img.shields.io/github/stars/AlexHCJP/map_route)
+
 
 ## Preview
 
@@ -77,3 +89,7 @@ MRouteEdge.edgesFrom(home, [profile, settings])
 // many → one
 MRouteEdge.edgesTo([auth, login], profileLoading)
 ```
+
+## Codecov
+
+![Codecov](https://codecov.io/gh/AlexHCJP/map_route/graphs/sunburst.svg?token=YAUGW6VZC0)

@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:map_route/src/models/m_route_item.dart';
 
+@internal
 class ListPage extends StatefulWidget {
   const ListPage({required this.routes, super.key});
-  
+
   final List<MRouteItem<dynamic, Widget>> routes;
 
   @override
@@ -83,8 +85,7 @@ class _ListPageState extends State<ListPage> {
                                     color: colorScheme.onSecondaryContainer,
                                   ),
                                 ),
-                                backgroundColor:
-                                    colorScheme.secondaryContainer,
+                                backgroundColor: colorScheme.secondaryContainer,
                                 padding: EdgeInsets.zero,
                                 materialTapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap,
